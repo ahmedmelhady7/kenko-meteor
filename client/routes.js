@@ -13,18 +13,36 @@ Router.route('/login', {
 	}
 });
 Router.route('/profile',{
-	onAfterAction: function(){
+	onBeforeAction: function(){
+	    var currentUser = Meteor.userId();
+	    if(currentUser){
+	        this.next();
+	    } else {
+	        this.render("login");
+	    }
+    },
+    onAfterAction: function(){
 		$('.active').removeClass('active');
 		$('.profile-nav').addClass('active');
-	}
+	},
+	data: function(){
+		var currentUser = Meteor.userId();
+		return Meteor.users.findOne({ _id: currentUser });
+	},    
+	waitOn: function(){
+        return Meteor.subscribe('users');
+    }
 });
 Router.route('/', {
     name: 'home',
     template: 'home',
-	onAfterAction: function(){
+    onAfterAction: function(){
 		$('.active').removeClass('active');
 		$('.home-nav').addClass('active');
-	}
+	},
+	waitOn: function(){
+        return Meteor.subscribe('plans');
+    }
 });
 Router.route('/plan/:_id', {
     name: 'planPage',
@@ -40,9 +58,14 @@ Router.route('/plan/:_id', {
         } else {
             this.render("login");
         }
+    },
+    waitOn: function(){
+        var currentList = this.params._id;
+        return [ Meteor.subscribe('plans'), Meteor.subscribe('todos', currentList) ]
     }
 });
 
 Router.configure({
-    layoutTemplate: 'main'
+    layoutTemplate: 'main',
+    loadingTemplate: 'loading'
 });

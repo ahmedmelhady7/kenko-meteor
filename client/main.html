@@ -11,31 +11,6 @@
     </div>
 </template>
 
-<template name="profile">
-    <h1>Profile page</h1>
-</template>
-
-<template name="footer">
-    <div class="footer">
-        <div class="container">
-          <p><span class="fa fa-heart" style="color: red"></span> from the Kenko team Copyright &copy; Kenko, 2015-2016.</p>
-        </div>
-      </div>
-</template>
-
-<template name="plans">
-    <h2>Plans</h2>
-    <ul>
-        {{#each plan}}
-            <li><a href="{{pathFor route='planPage'}}">{{name}}</a></li>
-        {{/each}}
-    </ul>
-</template>
-<template name="planPage">
-    {{> plans}}
-    <h2>Tasks: {{name}}</h2>
-    {{> todos}}
-</template>
 <template name="navigation">
     <div class="header">
         <ul class="nav nav-pills pull-right">
@@ -57,11 +32,56 @@
     </div>
 </template>
 
+<template name="loading">
+    <p class="loader">Loading...</p>
+    <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+       <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+    </svg>
+</template>
+
+<template name="footer">
+    <div class="footer">
+        <div class="container">
+          <p><span class="fa fa-heart" style="color: red"></span> from the Kenko team Copyright &copy; Kenko, 2015-2016.</p>
+        </div>
+      </div>
+</template>
+
+<template name="profile">
+    <h1>Profile page</h1>
+    <ul>
+        <li>{{profile.name}}</li>
+        <li>{{username}}</li>
+        <li>{{email}}</li>
+        <li>Roles:
+            <ul>
+                {{#each roles}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+        </li>
+    </ul>
+</template>
 
 <template name="home">
     {{#if currentUser}}
         {{> plans}}
     {{/if}}
+</template>
+
+<template name="plans">
+    <h2>Plans</h2>
+    <ul>
+        {{#each plan}}
+            <li><a href="{{pathFor route='planPage'}}">{{name}}</a></li>
+        {{/each}}
+    </ul>
+</template>
+
+<template name="planPage">
+    {{> plans}}
+    <h2>Tasks: {{name}}</h2>
+    {{> todos}}
 </template>
 
 <template name="todos">
@@ -118,21 +138,34 @@
                 <legend>Register</legend>
                 <p class="error reg-error"></p>
                 <div class="form-group">
-                  <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+                  <label for="inputEmail" class="col-lg-2 control-label">Full Name</label>
                   <div class="col-lg-10">
-                    <input name="email" type="text" placeholder="Email" required="" class="form-control"/>
+                    <input name="fullname" type="text" placeholder="Full Name" required class="form-control"/>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+                  <label for="inputEmail" class="col-lg-2 control-label">Username</label>
                   <div class="col-lg-10">
-                    <input name="password" type="password" placeholder="Password" required="" class="form-control"/>
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox"/> Remember me
-                      </label>
-                    </div>
+                    <input name="username" type="text" placeholder="Username" required class="form-control"/>
                   </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+                  <div class="col-lg-10">
+                    <input name="email" type="text" placeholder="Email" required class="form-control"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-lg-2 control-label">Password</label>
+                    <div class="col-lg-10">
+                        <input name="password" type="password" placeholder="Password" required class="form-control password"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-lg-2 control-label">Confirm Password</label>
+                    <div class="col-lg-10">
+                        <input name="password_confirm" type="password" placeholder="Confirm Password" class="form-control password_confirm"/>
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-10 col-lg-offset-2">
@@ -155,13 +188,13 @@
             <div class="form-group">
               <label for="inputEmail" class="col-lg-2 control-label">Email</label>
               <div class="col-lg-10">
-                <input name="email" type="email" placeholder="Email" required="" class="form-control"/>
+                <input name="email" type="email" placeholder="Email" required class="form-control">
               </div>
             </div>
             <div class="form-group">
               <label for="inputPassword" class="col-lg-2 control-label">Password</label>
               <div class="col-lg-10">
-                <input name="password" type="password" placeholder="Password" required="" class="form-control"/>
+                <input name="password" type="password" placeholder="Password" required class="form-control">
                 <div class="checkbox">
                   <label>
                     <input type="checkbox"/> Remember me
