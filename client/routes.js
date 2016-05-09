@@ -30,7 +30,7 @@ Router.route('/profile',{
 		return Meteor.users.findOne({ _id: currentUser });
 	},    
 	waitOn: function(){
-        return Meteor.subscribe('users');
+        return Meteor.subscribe('user');
     }
 });
 Router.route('/', {
@@ -41,7 +41,7 @@ Router.route('/', {
 		$('.home-nav').addClass('active');
 	},
 	waitOn: function(){
-        return Meteor.subscribe('plans');
+        return [Meteor.subscribe('plans'), Meteor.subscribe('users')];
     }
 });
 Router.route('/plan/:_id', {

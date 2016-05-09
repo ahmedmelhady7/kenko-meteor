@@ -7,6 +7,37 @@ import './todos.js';
 
 // Meteor.subscribe('plans');
 
+Template.admin.helpers({
+    'admin': function(){
+        var currentUser = Meteor.user();
+        if(Roles.userIsInRole(currentUser, ['admin']))
+            return true;
+        return false;
+    }
+});
+
+Template.userList.helpers({
+    'users': function() {
+        return Meteor.users.find({});
+    }
+});
+
+Template.userList.events({
+    'click .makeDefaultUser': function(event){
+        event.preventDefault();
+        var id = this._id;
+        console.log(id)
+        Meteor.call('makeDefaultUser', id);
+    },
+    'click .makeTrainer': function(event){
+        event.preventDefault();
+        var id = this._id;
+        console.log(id)
+        Meteor.call('makeTrainer', id);
+    },
+     
+});
+
 Template.navigation.events({
     'click .logout': function(event){
         event.preventDefault();
@@ -33,10 +64,10 @@ Template.profile.helpers({
 
 $.validator.setDefaults({
     rules: {
-        email: {
-            required: true,
-            email: true
-        },
+        // email: {
+        //     required: true,
+        //     email: true
+        // },
         password: {
             required: true,
             minlength: 6
@@ -47,10 +78,10 @@ $.validator.setDefaults({
         }
     },
     messages: {
-        email: {
-            required: "You must enter an email address.",
-            email: "You've entered an invalid email address."
-        },
+        // email: {
+        //     required: "You must enter an email address.",
+        //     email: "You've entered an invalid email address."
+        // },
         password: {
             required: "You must enter a password.",
             minlength: "Your password must be at least {0} characters."
@@ -61,9 +92,9 @@ $.validator.setDefaults({
 Template.login.onRendered(function(){
     var validator = $('.login').validate({
         submitHandler: function(event){
-            var email = $('[name="email"]').val();
+            var emailorUsername = $('[name="email"]').val();
             var password = $('[name="password"]').val();
-            Meteor.loginWithPassword(email, password, function(error){
+            Meteor.loginWithPassword(emailorUsername, password, function(error){
                 if(error) {
                     if(error.reason == "User not found"){
                         validator.showErrors({
@@ -100,8 +131,7 @@ Template.register.onRendered(function(){
                 password: password,
                 profile: {
                     name: fullname
-                },
-                roles: ['default']
+                }
             }, function(error){
                 if(error){
                     if(error.reason == "Email already exists."){
@@ -123,7 +153,7 @@ Template.register.onRendered(function(){
                         createdFor: currentUser,
                         createdAt: new Date()
                     });
-                    Roles.addUsersToRoles(currentUser, 'default');
+                    Meteor.call('makeDefaultUser', currentUser);
                     Router.go('home');
                 }
             });
