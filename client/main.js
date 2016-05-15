@@ -19,6 +19,23 @@ Template.admin.helpers({
 Template.userList.helpers({
     'users': function() {
         return Meteor.users.find({});
+    },
+    'isUser': function() {
+        if(this.roles[0]=="user")
+            return true;
+        return false;
+    },
+    'hasTrainer': function() {
+        if(this.profile.hasTrainer)
+            return true;
+        return false;
+    },
+    'trainers': function(){
+        return Meteor.users.find({roles: ['trainer']},{});
+    },
+    'trainerUsername': function(){
+        var trainerId = this.profile.trainer_id;
+        return Meteor.users.findOne({_id: trainerId}, {username: 1}).username
     }
 });
 
@@ -26,16 +43,18 @@ Template.userList.events({
     'click .makeDefaultUser': function(event){
         event.preventDefault();
         var id = this._id;
-        console.log(id)
         Meteor.call('makeDefaultUser', id);
     },
     'click .makeTrainer': function(event){
         event.preventDefault();
         var id = this._id;
-        console.log(id)
         Meteor.call('makeTrainer', id);
     },
-     
+    'submit .setTrainer': function(event){
+        event.preventDefault();
+        var trainerId = $('[name="trainers"] :selected').val();
+        Meteor.call('addTrainerToUser', this._id, trainerId, this.profile.name);
+    }
 });
 
 Template.navigation.events({
@@ -50,8 +69,49 @@ Template.plans.helpers({
     'plan': function(){
         var currentUser = Meteor.userId();
         return Plans.find({createdFor: currentUser}, {sort: {name: 1}});
+    },
+    'isUser': function(){
+        var currentUser = Meteor.user();
+        if(currentUser.roles[0]==="user")
+            return true;
+        return false;
     }
 });
+
+Template.traineePage.helpers({
+    'traineeName': function(){
+        var currentUserId = this._id;
+        console.log("traineePage.helpers.traineeName "+this.username)
+        return Meteor.users.findOne({_id: currentUserId}, {username: 1});
+    }
+});
+
+Template.traineePlans.helpers({
+    'traineePlan': function(){
+        var currentUserId = this._id;
+        console.log("traineePlans.helpers.plan "+Plans.find({createdFor: currentUserId}, {sort: {name: 1}}));
+        return Plans.find({createdFor: currentUserId}, {sort: {name: 1}});
+    }
+});
+
+Template.trainees.helpers({
+    'isTrainer': function(){
+        var currentUser = Meteor.user();
+        if(currentUser.roles[0]==="trainer")
+            return true;
+        return false;  
+    },
+    'trainee': function(){
+        var currentUserId = Meteor.userId();
+        var users = Meteor.users.find().fetch();
+        var list = [];
+        for (var i = users.length - 1; i >= 0; i--) {
+            if(users[i].profile.trainer_id)
+                list.push(users[i]);
+        }
+        return list;
+    }
+})
 
 Template.profile.helpers({
     'email': function(){
@@ -142,7 +202,6 @@ Template.register.onRendered(function(){
                 }
                 else {
                     var currentUser = Meteor.userId();
-                    console.log(currentUser)
                     Plans.insert({
                         name: "Diet Plan",
                         createdFor: currentUser,

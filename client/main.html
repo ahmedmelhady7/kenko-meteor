@@ -73,7 +73,24 @@
     <ul>
     {{#each users}}
         {{#if this.roles}}
-            <li>{{this.username}} - {{this.roles}}</li>
+            {{#if isUser }}
+                    {{#if hasTrainer}}
+                        <li>{{this.username}} - Role : {{this.roles}} - Trainer {{trainerUsername}}</li>
+                    {{else}}
+                        <li>{{this.username}} - Role : {{this.roles}} - Choose Trainer
+                            <form class="setTrainer">
+                              <select name="trainers">
+                                {{#each trainers}}
+                                    <option value="{{this._id}}">{{this.username}}</option>
+                                {{/each}}
+                              </select>
+                              <input type="submit" />
+                            </form>
+                        </li>
+                    {{/if}}
+            {{else}}
+                <li>{{this.username}} - Role : {{this.roles}}</li>
+            {{/if}}
         {{else}}
             <li>{{this.username}} - <a href="#" class="makeDefaultUser">add as a default user</a> - <a href="#" class="makeTrainer">add as a trainer</a></li>
         {{/if}}
@@ -84,17 +101,45 @@
 <template name="home">
     {{#if currentUser}}
         {{> plans}}
+        {{> trainees}}
         {{> admin}}
     {{/if}}
 </template>
 
 <template name="plans">
+    {{#if isUser}}
     <h2>Plans</h2>
     <ul>
         {{#each plan}}
             <li><a href="{{pathFor route='planPage'}}">{{name}}</a></li>
         {{/each}}
     </ul>
+    {{/if}}
+</template>
+
+<template name="traineePlans">
+    <h2>Plans</h2>
+    <ul>
+        {{#each traineePlan}}
+            <li><a href="{{pathFor route='planPage'}}">{{name}}</a></li>
+        {{/each}}
+    </ul>
+</template>
+
+<template name="traineePage">
+    <h1>Trainee page for {{traineeName}}</h1>
+    {{> traineePlans}}
+</template>
+
+<template name="trainees">
+    {{#if isTrainer}}
+    <h2>Trainees</h2>
+    <ul>
+        {{#each trainee}}
+            <li><a href="{{pathFor route='traineePage'}}" class="trainee">{{this.username}}</a></li>
+        {{/each}}
+    </ul>
+    {{/if}}
 </template>
 
 <template name="planPage">
@@ -103,6 +148,10 @@
     {{> todos}}
 </template>
 
+<!-- <template name="traineePage">
+    {{> traineePlans}}
+</template>
+ -->
 <template name="todos">
     {{#if belongsToUser}}
         {{> addTodo}}

@@ -15,9 +15,16 @@ Meteor.startup(() => {
 		  return Meteor.users.find({_id: currentUser}, {});
 	});
 
+	Meteor.publish('traineePlans', function(traineeId){
+		return Plans.find({ createdFor: traineeId });
+	});
 
 	Meteor.publish('users', function(){
 		  return Meteor.users.find({});
+	});
+
+	Meteor.publish('trainees', function(trainerId){
+		  return Meteor.users.find({profile: {trainer_id: trainerId}});
 	});
 
 
@@ -27,6 +34,9 @@ Meteor.startup(() => {
 	    },
 	    'makeTrainer': function(userId){
 	    	Roles.addUsersToRoles(userId,['trainer']);
+	    },
+	    'addTrainerToUser': function(userId, trainerId, profileName){
+	    	Meteor.users.update({_id: userId}, {$set: {profile: {trainer_id: trainerId, hasTrainer: true, name: profileName}}});
 	    }
 	});
 
