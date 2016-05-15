@@ -49,9 +49,9 @@ Meteor.startup(() => {
 //     },
 //     roles: ['default', 'admin']
 // });
-
+//
 // Roles.addUsersToRoles(id,['admin']);
-
+//
 // var id = Accounts.createUser({
 //     username: "m7md",
 //     email: "m7md@a.b",
@@ -60,8 +60,7 @@ Meteor.startup(() => {
 //         name: "m7md aly"
 //     }
 // });
-
-//Roles.addUsersToRoles("fyPQ6v6gHmNkqxJAz",['admin', 'user', 'trainer', 'btengan']);
+//
+// Roles.addUsersToRoles(id,['admin', 'user', 'trainer', 'btengan']);
 
 });
-

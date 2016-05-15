@@ -28,7 +28,7 @@ Router.route('/profile',{
 	data: function(){
 		var currentUser = Meteor.userId();
 		return Meteor.users.findOne({ _id: currentUser });
-	},    
+	},
 	waitOn: function(){
         return Meteor.subscribe('user');
     }
@@ -70,12 +70,12 @@ Router.route('/trainee/:_id', {
 	template: 'traineePage',
 	waitOn: function(){
 		var currentTraineeId = this.params._id;
-		console.log("waitOn function "+ currentTraineeId);
-        return [Meteor.subscribe('traineePlans', currentTraineeId), Meteor.subscribe('trainees', Meteor.userId())];
+		console.log("waitOn function ", currentTraineeId);
+        return [Meteor.subscribe('traineePlans', currentTraineeId),Meteor.subscribe('users')];
     },
     data: function(){
 		var currentTraineeId = this.params._id;
-		console.log("data function "+ Meteor.users.findOne({_id: currentTraineeId}));
+		console.log("data function ", Meteor.users.findOne({_id: currentTraineeId}));
 		return Meteor.users.findOne({_id: currentTraineeId});
 	}
 })
