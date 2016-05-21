@@ -1,0 +1,63 @@
+[
+
+  {
+    "username": "hadi",
+    "email": "hadi@a.b",
+    "password": "123456",
+    "profile": {
+      "name": "Ahmed Elhady"
+    },
+    "roles": ["admin"]
+  },
+
+  {
+    "username": "t1",
+    "email": "t1@a.b",
+    "password": "123456",
+    "profile": {
+      "name": "Trainer 1"
+    },
+    "roles": ["trainer"]
+  },
+
+  {
+    "username": "t2",
+    "email": "t2@a.b",
+    "password": "123456",
+    "profile": {
+      "name": "Trainer 2"
+    },
+    "roles": ["trainer"]
+  },
+
+  {
+    "username": "u1",
+    "email": "u1@a.b",
+    "password": "123456",
+    "profile": {
+      "name": "User 1"
+    },
+    "roles": ["user"]
+  },
+
+  {
+    "username": "u2",
+    "email": "u2@a.b",
+    "password": "123456",
+    "profile": {
+      "name": "User 2"
+    },
+    "roles": ["user"]
+  },
+
+  {
+    "username": "u3",
+    "email": "u3@a.b",
+    "password": "123456",
+    "profile": {
+      "name": "User 3"
+    },
+    "roles": ["user"]
+  }
+
+]

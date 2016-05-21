@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 Meteor.startup(() => {
   // code to run on server at startup
-  	Meteor.publish('plans', function(){
+	Meteor.publish('plans', function(){
 		var currentUser = this.userId;
 		return Plans.find({ createdFor: currentUser });
 	});
