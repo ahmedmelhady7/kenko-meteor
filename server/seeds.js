@@ -1,65 +1,37 @@
-Meteor.methods({  
-  'Database.seed': function() {
-    //Create an admin
-    var admin = Accounts.createUser({
-        username: "hadi",
-        email: "hadi@a.b",
-        password: "123456",
-        profile: {
-            name: "Ahmed Elhady"
-        }
-    });
-    Roles.addUsersToRoles(admin,['admin']);
+Meteor.methods({
+  'Database.seed': function (forced = false) {
+    let users = JSON.parse(Assets.getText('userSeed.json'));
+    let userId = Meteor.userId();
 
-    //create 2 trainers
-    var t1 = Accounts.createUser({
-        username: "t1",
-        email: "t1@a.b",
-        password: "123456",
-        profile: {
-            name: "Trainer 1"
-        }
-    });
-    Roles.addUsersToRoles(t1,['trainer']);
-    var t2 = Accounts.createUser({
-        username: "t2",
-        email: "t2@a.b",
-        password: "123456",
-        profile: {
-            name: "Trainer 2"
-        }
-    });
-    Roles.addUsersToRoles(t2,['trainer']);
+    // Clean the collection if forced is true and the user
+    // have adminstrative access
+    if (forced) {
+      if (Roles.userIsInRole(userId, 'admin')) {
+        Meteor.users.remove({});
+      }
+    }
 
-    //create 3 users
-    var u1 = Accounts.createUser({
-        username: "u1",
-        email: "u1@a.b",
-        password: "123456",
-        profile: {
-            name: "User 1"
-        }
-    });
-    Roles.addUsersToRoles(u1,['user']);
-    var u2 = Accounts.createUser({
-        username: "u2",
-        email: "u2@a.b",
-        password: "123456",
-        profile: {
-            name: "User 2"
-        }
-    });
-    Roles.addUsersToRoles(u2,['user']);
-    var u3 = Accounts.createUser({
-        username: "u3",
-        email: "u3@a.b",
-        password: "123456",
-        profile: {
-            name: "User 3"
-        }
-    });
-    Roles.addUsersToRoles(u3,['user']);
+    // Only seed if collection is clean
+    if (Meteor.users.find().count() === 0) {
+      users.forEach((user) => {
+        let { username, email, password, profile } = user;
+        let id = Accounts.createUser({ username, email, password, profile });
 
+        // Fetch the role passed in the original user object
+        Roles.addUsersToRoles(id, user.roles);
+
+      });
+
+    }
 
   }
+
+});
+
+Meteor.startup(() => {
+  // Seed users if collection is empty
+  if (Meteor.users.find().count() === 0) {
+    Meteor.call('Database.seed');
+  }
+
 });
